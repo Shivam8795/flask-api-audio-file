@@ -1,0 +1,78 @@
+from flask import Flask, make_response, request, jsonify
+from flask_mongoengine import MongoEngine
+from api_constants import  mongodb_password
+
+app = Flask(__name__)
+database_name = "API"
+DB_URI = "mongodb+srv://anshpureagility:{}@cluster0.avsod.mongodb.net/{}?retryWrites=true&w=majority".format(mongodb_password, database_name)
+app.config["MONGODB_HOST"] = DB_URI
+
+
+db = MongoEngine()
+db.init_app(app)
+
+class audio(db.Document):
+    song = db.StringField()
+    podcast = db.StringField()
+    AudioBook = db.StringField()
+
+    def to_json(self):
+        retun {
+            "song": self.song,
+            "podcast": self.podcast,
+            "AudioBook":  self.AudioBook
+        }
+
+@app.route('/api/db_populate', methods = ['POST'])
+def db_populate():
+    audio1 = Audio(song = "ab", podcast = "jj", Audiorbook = "self")
+    audio2 = Audio(song = "love", podcast = "lover",
+                   Audiobook = "loveisair")
+    audio1.save()
+    audio2.save()
+    return make_response("",201 )
+
+@app.route('/api/audio', methods = ['GET','POST'])
+def api_song():
+    if request.method == "GET":
+        print(request.method)
+        audio = []
+        for audio in audio.object:
+            audio.append(audio)
+        return make_response(jsonify(audio), 200)
+    elif request.method == "POST"
+
+
+        content = request.json
+        audio = audio(song=content['song'],
+                      podcast=content['podcast'],Audiobook=content['Audiobook'])
+        audio.save()
+        return make_response("", 201)
+
+
+
+@app.route('/api/audio/song', methods = ['GET', 'PUT', 'DELETE'])
+def api_song(song):
+    if request.method == "GET":
+        audio_obj = audio.objects(song = song).first()
+        if audio_obj:
+            return make_response(jsonify(audio_obj()),200)
+        else:
+            return make_response("",404)
+    elif request.method == "PUT":
+        pass
+    elif request.method == "DELETE":
+        pass
+
+        content = request.json
+        audio_obj = audio.object(song = song).first()
+        audio_obj.update(Audiobook = content['Audiobook'], song = conetent['song'])
+        return make_response("", 204)
+    elif request.method == "DELETE":
+        audio_obj = audio.objects(song = song).first()
+        song_obj.delete()
+        return make_response("", 204)
+
+    
+if __name__ == '__main__':
+    app.run()
